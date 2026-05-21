@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <nav class="navbar">
+      <div class="nav-logo">📊 VCE Tracker</div>
+      <a href="index.html" class="refresh-btn">🔄 Refresh Data</a>
+    </nav>
+
+    <!-- CGPA Section -->
+    <div class="section">
+      <h2>🎓 CGPA Overview</h2>
+      <div id="cgpaGrid" class="cgpa-grid"></div>
+    </div>
+
+    <!-- Attendance Section -->
+    <div class="section">
+      <h2>📋 Attendance</h2>
+      <div id="attendanceGrid" class="attendance-grid"></div>
+    </div>
+
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

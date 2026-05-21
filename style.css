@@ -1,0 +1,214 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f1117;
+  color: white;
+  min-height: 100vh;
+}
+
+/* LANDING */
+.landing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.hero {
+  text-align: center;
+  max-width: 600px;
+}
+
+.hero-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  padding: 8px;
+  background: rgba(255,255,255,0.1);
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  color: #aaa;
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+}
+
+.steps {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.step {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.step p { font-size: 0.85rem; color: #ccc; }
+
+.primary-btn {
+  padding: 0.9rem 2.5rem;
+  background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.primary-btn:hover { opacity: 0.85; }
+
+.status-msg {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* DASHBOARD */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-logo { font-size: 1.2rem; font-weight: 700; }
+
+.refresh-btn {
+  color: #4f8ef7;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.section {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #ccc;
+}
+
+.cgpa-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cgpa-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  min-width: 140px;
+}
+
+.cgpa-sem { font-size: 0.8rem; color: #aaa; margin-bottom: 0.5rem; }
+.cgpa-value { font-size: 2.5rem; font-weight: 800; color: #4f8ef7; }
+.cgpa-label { font-size: 0.8rem; color: #aaa; }
+
+.attendance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.subject-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.2rem;
+  border-left-width: 4px;
+}
+
+.subject-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.subject-pct {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.subject-type { font-size: 0.75rem; color: #aaa; margin-bottom: 0.4rem; }
+.subject-status { font-size: 0.85rem; margin-bottom: 0.5rem; }
+.subject-bunk { font-size: 0.8rem; color: #ccc; }
+
+@media (max-width: 768px) {
+  .steps { flex-direction: column; }
+  .cgpa-grid { justify-content: center; }
+}
+/* BOOKMARKLET */
+.bookmarklet-section {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bm-instruction { color: #aaa; font-size: 0.9rem; }
+
+.bookmarklet-btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #4f8ef7, #a78bfa);
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: grab;
+}
+
+.bm-or { color: #555; font-size: 0.85rem; }
+
+.bm-note {
+  color: #aaa;
+  font-size: 0.85rem;
+  max-width: 400px;
+  text-align: center;
+}

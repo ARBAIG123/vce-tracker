@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="logo.png"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div class="landing">
+    <div class="hero">
+      <img src="logo.png" alt="VCE Logo" class="hero-logo"/>
+      <h1>VCE Tracker</h1>
+      <p class="hero-sub">Attendance & CGPA insights for Vardhaman students</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <p>Log in to your VCE portal normally</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <p>Drag the button below to your bookmarks bar</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <p>Go to portal, click the bookmark, see your data!</p>
+        </div>
+      </div>
+
+      <div class="bookmarklet-section">
+        <p class="bm-instruction">Drag this to your bookmarks bar:</p>
+        <a id="bookmarkletBtn" class="bookmarklet-btn" href="#">📊 VCE Tracker</a>
+        <p class="bm-or">— or —</p>
+        <button class="primary-btn" onclick="copyBookmarklet()">📋 Copy Bookmarklet Code</button>
+        <p class="bm-note">Then go to <strong>student.vardhaman.org</strong>, click the bookmark, and your data will load here!</p>
+      </div>
+
+      <p id="statusMsg" class="status-msg"></p>
+    </div>
+  </div>
+
+  <script src="fetch.js"></script>
+</body>
+</html>
