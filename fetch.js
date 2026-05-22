@@ -1,7 +1,6 @@
-// Generate the bookmarklet code
 const bookmarkletCode = `javascript:(function(){
   const s=document.createElement('script');
-  s.src='http://127.0.0.1:5500/bookmarklet.js?t='+Date.now();
+  s.src='https://vce-tracker.vercel.app/bookmarklet.js?t='+Date.now();
   document.body.appendChild(s);
 })();`;
 
