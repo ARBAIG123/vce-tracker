@@ -27,7 +27,7 @@
 
     const data = { cgpa, attendance };
     const encoded = encodeURIComponent(JSON.stringify(data));
-    window.open(`http://127.0.0.1:5500/dashboard.html?data=${encoded}`, '_blank');
+    window.open(`https://vce-tracker.vercel.app/dashboard.html?data=${encoded}`, '_blank');
 
   } catch(e) {
     alert('VCE Tracker Error: ' + e.message);
