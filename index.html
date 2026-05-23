@@ -37,7 +37,7 @@
 
       <div class="hero-actions animate-fade-up delay-2">
         <a id="bookmarkletBtn" class="btn-primary" href="#">📊 VCE Tracker — Drag to Bookmarks</a>
-        <button class="btn-secondary" id="copyBtn">Copy Bookmarklet</button>
+        
       </div>
       <p id="statusMsg" class="status-msg"></p>
 
@@ -200,14 +200,7 @@
       localStorage.setItem('site_theme', next);
     });
 
-    // Copy bookmarklet
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      const code = document.getElementById('bookmarkletBtn').href;
-      navigator.clipboard.writeText(code);
-      const msg = document.getElementById('statusMsg');
-      msg.style.color = '#00e5a0';
-      msg.textContent = '✅ Copied! Paste it as a bookmark URL.';
-    });
+    
 
     // Particles
     const canvas = document.getElementById('particles');
