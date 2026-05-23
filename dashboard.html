@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VCE Tracker</title>
+  <title>VCE Tracker | Dashboard</title>
   <link rel="icon" type="image/png" href="logo.png"/>
-  <link rel="stylesheet" href="dashboard.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -15,129 +16,122 @@
       <img src="logo.png" class="modal-logo"/>
       <h2>Welcome to VCE Tracker</h2>
       <p>What should we call you?</p>
-      <input type="text" id="nameInput" placeholder="Enter your name" maxlength="30"/>
+      <input type="text" id="nameInput" class="modal-input" placeholder="Enter your name" maxlength="30"/>
       <button class="modal-btn" onclick="saveName()">Let's Go →</button>
     </div>
   </div>
 
-  <!-- Main Dashboard -->
   <div class="app" id="mainApp" style="display:none;">
 
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="nav-left">
-        <img src="logo.png" class="nav-logo"/>
+    <nav class="dash-navbar">
+      <div class="dash-nav-left">
+        <img src="logo.png" class="dash-nav-logo"/>
         <div>
-          <div class="nav-title">VCE Tracker</div>
-          <div class="nav-sub" id="navSub">Loading...</div>
+          <div class="dash-nav-title">VCE Tracker</div>
+          <div class="dash-nav-sub" id="navSub">Loading...</div>
         </div>
       </div>
-      
+      <div class="dash-nav-right">
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+      </div>
     </nav>
 
-    <!-- Semester Overview -->
-    <div class="section">
-      <div class="section-label">SEMESTER OVERVIEW</div>
+    <div class="dash-section">
+      <div class="dash-section-label">Semester Overview</div>
       <div class="overview-grid" id="overviewGrid"></div>
     </div>
 
-    <!-- Analytics -->
-    <div class="section">
-      <div class="section-label">ANALYTICS</div>
+    <div class="dash-section" style="margin-top:1.5rem;">
+      <div class="dash-section-label">Analytics</div>
       <div class="analytics-grid">
         <div class="analytics-card">
-          <div class="analytics-title">OVERALL ATTENDANCE</div>
+          <div class="analytics-title">Overall Attendance</div>
           <div class="ring-container">
-            <canvas id="overallRing" width="160" height="160"></canvas>
+            <canvas id="overallRing" width="140" height="140"></canvas>
             <div class="ring-label">
               <div class="ring-pct" id="overallPct">--%</div>
-              <div class="ring-sub" id="overallClasses">-- classes</div>
+              <div class="ring-sub" id="overallClasses">--</div>
             </div>
           </div>
           <div class="analytics-status" id="overallStatus"></div>
         </div>
-
         <div class="analytics-card">
           <div class="analytics-title">CGPA</div>
           <div id="cgpaAnalytics"></div>
         </div>
-
         <div class="analytics-card">
-          <div class="analytics-title">BUNK CALCULATOR</div>
+          <div class="analytics-title">Bunk Calculator</div>
           <div class="bunk-chips" id="bunkChips"></div>
           <div class="bunk-result" id="bunkResult"></div>
         </div>
       </div>
     </div>
 
-    <!-- Attendance -->
-    <div class="section">
-      <div class="attendance-header">
-        <div class="section-label">ATTENDANCE</div>
-        <div class="filter-tabs">
-          <button class="filter-tab active" onclick="filterCards('all', this)">All</button>
-          <button class="filter-tab" onclick="filterCards('safe', this)">Safe</button>
-          <button class="filter-tab" onclick="filterCards('borderline', this)">Borderline</button>
-          <button class="filter-tab" onclick="filterCards('risk', this)">At Risk</button>
-        </div>
+    <div class="attendance-header">
+      <div class="dash-section-label" style="margin:0;">Attendance</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" id="tabAll">All</button>
+        <button class="filter-tab" id="tabSafe">Safe</button>
+        <button class="filter-tab" id="tabBorderline">Borderline</button>
+        <button class="filter-tab" id="tabRisk">At Risk</button>
       </div>
-      <div class="subjects-grid" id="subjectsGrid"></div>
     </div>
+    <div class="subjects-grid" id="subjectsGrid"></div>
 
-    <!-- Sign Out -->
     <div class="signout-section">
-      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+      <button class="signout-btn" id="signOutBtn">Sign Out</button>
     </div>
 
   </div>
 
-  <!-- Subject Detail Page -->
+  <!-- Subject Detail -->
   <div class="detail-page" id="detailPage" style="display:none;">
-    <nav class="navbar">
-      <div class="nav-left">
-        <button class="back-btn" onclick="closeDetail()">← Back</button>
+    <nav class="dash-navbar">
+      <div class="dash-nav-left">
+        <button class="back-btn" id="backBtn">← Back</button>
         <div>
-          <div class="nav-title" id="detailSubjectName">Subject</div>
-          <div class="nav-sub" id="detailSubjectType">Theory</div>
+          <div class="dash-nav-title" id="detailSubjectName">Subject</div>
+          <div class="dash-nav-sub" id="detailSubjectType">Theory</div>
         </div>
+      </div>
+      <div class="dash-nav-right">
+        <button class="theme-toggle" id="themeToggle2">🌙</button>
       </div>
     </nav>
 
     <div class="detail-content">
       <div class="detail-stats">
         <div class="detail-stat-card">
-          <canvas id="detailRing" width="120" height="120"></canvas>
+          <canvas id="detailRing" width="100" height="100"></canvas>
           <div class="detail-stat-info">
-            <div class="detail-stat-label">ATTENDANCE</div>
+            <div class="detail-stat-label">Attendance</div>
             <div class="detail-stat-value" id="detailAttended">--/--</div>
             <div class="detail-stat-sub" id="detailStatus">--</div>
           </div>
         </div>
         <div class="detail-stat-card">
-          <canvas id="marksRing" width="120" height="120"></canvas>
+          <canvas id="marksRing" width="100" height="100"></canvas>
           <div class="detail-stat-info">
-            <div class="detail-stat-label">OVERALL MARKS</div>
+            <div class="detail-stat-label">Overall Marks</div>
             <div class="detail-stat-value" id="detailMarks">0/0</div>
-            <div class="detail-stat-sub" id="detailAssessments">0 assessments logged</div>
+            <div class="detail-stat-sub" id="detailAssessments">0 assessments</div>
           </div>
         </div>
         <div class="detail-stat-card best-score-card">
           <div class="best-score-icon">🏆</div>
           <div class="detail-stat-info">
-            <div class="detail-stat-label">BEST SCORE</div>
-            <div class="detail-stat-value" id="detailBestScore">No data yet</div>
+            <div class="detail-stat-label">Best Score</div>
+            <div class="detail-stat-value" id="detailBestScore">No data</div>
           </div>
         </div>
       </div>
 
-      <!-- Assessments -->
       <div class="assessments-section">
         <div class="assessments-header">
-          <div class="section-label">ASSESSMENTS</div>
-          <button class="add-btn" onclick="toggleAddForm()">+ Add Assessment</button>
+          <div class="dash-section-label" style="margin:0;">Assessments</div>
+          <button class="add-btn" id="addAssessmentBtn">+ Add Assessment</button>
         </div>
 
-        <!-- Add Form -->
         <div class="add-form" id="addForm" style="display:none;">
           <div class="form-row">
             <div class="form-group full">
@@ -149,11 +143,11 @@
             <div class="form-group">
               <label>Category</label>
               <select id="formCategory">
-              <option>Assignment</option>
-              <option>Lab Record</option>
-              <option>CAT-1</option>
-              <option>CAT-2</option>
-              <option>Semester</option>
+                <option>Assignment</option>
+                <option>Lab Record</option>
+                <option>CAT-1</option>
+                <option>CAT-2</option>
+                <option>Semester</option>
               </select>
             </div>
             <div class="form-group">
@@ -178,8 +172,8 @@
             </div>
           </div>
           <div class="form-actions">
-            <button class="save-btn" onclick="saveAssessment()">Save</button>
-            <button class="cancel-btn" onclick="toggleAddForm()">Cancel</button>
+            <button class="save-btn" id="saveAssessmentBtn">Save</button>
+            <button class="cancel-btn" id="cancelAssessmentBtn">Cancel</button>
           </div>
         </div>
 
@@ -189,5 +183,21 @@
   </div>
 
   <script src="dashboard.js"></script>
+  <script>
+    // Theme
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
+
+    document.querySelectorAll('.theme-toggle').forEach(t => {
+      t.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        document.querySelectorAll('.theme-toggle').forEach(x => x.textContent = next === 'dark' ? '🌙' : '☀️');
+        localStorage.setItem('site_theme', next);
+      });
+    });
+  </script>
 </body>
 </html>

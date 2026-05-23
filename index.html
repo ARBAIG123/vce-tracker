@@ -1,47 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <link rel="icon" type="image/png" href="logo.png"/>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VCE Tracker</title>
+  <title>VCE Tracker | Attendance & CGPA</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <div class="landing">
-    <div class="hero">
-      <img src="logo.png" alt="VCE Logo" class="hero-logo"/>
-      <h1>VCE Tracker</h1>
-      <p class="hero-sub">Attendance & CGPA insights for Vardhaman students</p>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <p>Log in to your VCE portal normally</p>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <p>Drag the button below to your bookmarks bar</p>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <p>Go to portal, click the bookmark, see your data!</p>
-        </div>
-      </div>
-
-      <div class="bookmarklet-section">
-        <p class="bm-instruction">Drag this to your bookmarks bar:</p>
-        <a id="bookmarkletBtn" class="bookmarklet-btn" href="#">📊 VCE Tracker</a>
-        <p class="bm-or">— or —</p>
-        <button class="primary-btn" onclick="copyBookmarklet()">📋 Copy Bookmarklet Code</button>
-        <p class="bm-note">Then go to <strong>student.vardhaman.org</strong>, click the bookmark, and your data will load here!</p>
-      </div>
-
-      <p id="statusMsg" class="status-msg"></p>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
     </div>
-  </div>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">🎓 Built for Vardhaman Students</div>
+    <h1 class="hero-title">Track Your Attendance<br/><span class="gradient-text">& CGPA Instantly</span></h1>
+    <p class="hero-sub">No manual entry. No guesswork. Just click and see your real-time attendance, safe bunk count, and CGPA — pulled directly from the VCE portal.</p>
+
+    <div class="hero-steps">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-text">Log in to VCE portal</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-text">Drag bookmark below</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-text">Click it on the portal</div>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a id="bookmarkletBtn" class="btn-primary" href="#">📊 VCE Tracker — Drag to Bookmarks</a>
+      <button class="btn-secondary" onclick="copyBookmarklet()">Copy Bookmarklet</button>
+    </div>
+    <p id="statusMsg" class="status-msg"></p>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Live Attendance</h3>
+        <p>See every subject's attendance percentage pulled directly from your VCE portal session.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Safe Bunk Count</h3>
+        <p>Instantly know how many classes you can skip while staying above the 75% threshold.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>CGPA Insights</h3>
+        <p>Track your CPI semester by semester and log individual assessment marks per subject.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>One Click</h3>
+        <p>No login, no setup, no manual input. One bookmark click and everything loads instantly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+  <p>© 2026 VCE Tracker · Built for Vardhaman College of Engineering students · <span class="footer-accent">Not affiliated with VCE</span></p>
+</footer>
 
   <script src="fetch.js"></script>
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+  </script>
 </body>
 </html>
