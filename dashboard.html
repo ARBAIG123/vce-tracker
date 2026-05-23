@@ -17,11 +17,14 @@
       <h2>Welcome to VCE Tracker</h2>
       <p>What should we call you?</p>
       <input type="text" id="nameInput" class="modal-input" placeholder="Enter your name" maxlength="30"/>
-      <button class="modal-btn" onclick="saveName()">Let's Go →</button>
+      <button class="modal-btn" id="saveNameBtn">Let's Go →</button>
     </div>
   </div>
 
-  <div class="app" id="mainApp" style="display:none;">
+  <div class="app" id="mainApp" style="display:none;opacity:0;">
+
+    <!-- Top progress bar -->
+    <div class="top-progress-bar" id="topProgressBar"></div>
 
     <nav class="dash-navbar">
       <div class="dash-nav-left">
@@ -36,18 +39,23 @@
       </div>
     </nav>
 
-    <div class="dash-section">
+    <!-- Greeting Banner -->
+    <div class="greeting-banner" id="greetingBanner"></div>
+
+    <!-- Overview -->
+    <div class="dash-section fade-section">
       <div class="dash-section-label">Semester Overview</div>
       <div class="overview-grid" id="overviewGrid"></div>
     </div>
 
-    <div class="dash-section" style="margin-top:1.5rem;">
+    <!-- Analytics -->
+    <div class="dash-section fade-section" style="margin-top:1.5rem;">
       <div class="dash-section-label">Analytics</div>
       <div class="analytics-grid">
         <div class="analytics-card">
           <div class="analytics-title">Overall Attendance</div>
           <div class="ring-container">
-            <canvas id="overallRing" width="140" height="140"></canvas>
+            <canvas id="overallRing" width="130" height="130"></canvas>
             <div class="ring-label">
               <div class="ring-pct" id="overallPct">--%</div>
               <div class="ring-sub" id="overallClasses">--</div>
@@ -62,12 +70,15 @@
         <div class="analytics-card">
           <div class="analytics-title">Bunk Calculator</div>
           <div class="bunk-chips" id="bunkChips"></div>
-          <div class="bunk-result" id="bunkResult"></div>
+          <div class="bunk-result" id="bunkResult">
+            <span style="color:var(--text3);font-size:0.82rem;">Select a subject above</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="attendance-header">
+    <!-- Attendance -->
+    <div class="attendance-header fade-section">
       <div class="dash-section-label" style="margin:0;">Attendance</div>
       <div class="filter-tabs">
         <button class="filter-tab active" id="tabAll">All</button>
@@ -102,7 +113,7 @@
     <div class="detail-content">
       <div class="detail-stats">
         <div class="detail-stat-card">
-          <canvas id="detailRing" width="100" height="100"></canvas>
+          <canvas id="detailRing" width="90" height="90"></canvas>
           <div class="detail-stat-info">
             <div class="detail-stat-label">Attendance</div>
             <div class="detail-stat-value" id="detailAttended">--/--</div>
@@ -110,7 +121,7 @@
           </div>
         </div>
         <div class="detail-stat-card">
-          <canvas id="marksRing" width="100" height="100"></canvas>
+          <canvas id="marksRing" width="90" height="90"></canvas>
           <div class="detail-stat-info">
             <div class="detail-stat-label">Overall Marks</div>
             <div class="detail-stat-value" id="detailMarks">0/0</div>
@@ -188,7 +199,6 @@
     const saved = localStorage.getItem('site_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');
-
     document.querySelectorAll('.theme-toggle').forEach(t => {
       t.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');

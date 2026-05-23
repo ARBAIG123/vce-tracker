@@ -1229,3 +1229,38 @@ body {
   .stat-divider { display: none; }
   .nav-links-row { gap: 0.6rem; }
 }
+/* ===== DASHBOARD POLISH ===== */
+.top-progress-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.greeting-banner {
+  max-width: 1200px;
+  margin: 1.5rem auto 0;
+  padding: 0 2rem;
+  font-size: 0.85rem;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.fade-section {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.app {
+  transition: opacity 0.4s ease;
+}
+
+.app.loaded {
+  opacity: 1 !important;
+}

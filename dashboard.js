@@ -39,7 +39,25 @@ window.saveName = function() {
 function showApp(name) {
   document.getElementById('mainApp').style.display = 'block';
   document.getElementById('navSub').textContent = `Welcome back, ${name}`;
+
+  // Greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const day = days[new Date().getDay()];
+  document.getElementById('greetingBanner').textContent = `${greeting}, ${name} · ${day}`;
+
   renderAll();
+
+  // Animate app in
+  setTimeout(() => {
+    document.getElementById('mainApp').classList.add('loaded');
+
+    // Animate sections in one by one
+    document.querySelectorAll('.fade-section').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 150);
+    });
+  }, 100);
 }
 
 function signOut() {
@@ -56,25 +74,46 @@ function drawRing(canvasId, percentage, color) {
   const ctx = canvas.getContext('2d');
   const cx = canvas.width / 2;
   const cy = canvas.height / 2;
-  const r = cx - 10;
-  const start = -Math.PI / 2;
-  const end = start + (2 * Math.PI * percentage / 100);
+  const r = cx - 8;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Background ring
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-  ctx.strokeStyle = getComputedStyle(document.documentElement)
-    .getPropertyValue('--bg3') || '#1a1a25';
-  ctx.lineWidth = 8;
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+  ctx.lineWidth = 4;
   ctx.stroke();
 
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, start, end);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 8;
-  ctx.lineCap = 'round';
-  ctx.stroke();
+  // Animated progress ring
+  let current = 0;
+  const target = percentage;
+  const speed = 2;
+
+  function animate() {
+    if (current < target) {
+      current = Math.min(current + speed, target);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      const start = -Math.PI / 2;
+      const end = start + (2 * Math.PI * current / 100);
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, start, end);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      requestAnimationFrame(animate);
+    }
+  }
+  animate();
 }
 
 function getColor(pct) {
@@ -144,6 +183,14 @@ function renderOverview(subjects) {
       </div>
     </div>
   `).join('');
+
+  // Update top progress bar
+  const avg = subjects.length
+    ? Math.round(subjects.reduce((a, b) => a + b.pct, 0) / subjects.length)
+    : 0;
+  setTimeout(() => {
+    document.getElementById('topProgressBar').style.width = avg + '%';
+  }, 300);
 }
 
 function renderAnalytics(subjects) {
