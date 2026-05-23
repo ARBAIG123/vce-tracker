@@ -10,84 +10,188 @@
 </head>
 <body>
 
+  <!-- Particles Canvas -->
+  <canvas id="particles" style="position:fixed;top:0;left:0;pointer-events:none;z-index:0;opacity:0.4;"></canvas>
+
   <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-brand">
       <img src="logo.png" class="nav-logo"/>
       <span class="nav-title">VCE Tracker</span>
     </div>
-    <button class="theme-toggle" id="themeToggle">🌙</button>
+    <div class="nav-links-row">
+      <a href="cgpa.html" class="nav-link">CGPA Calculator</a>
+      <a href="privacy.html" class="nav-link">Privacy</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-badge">🎓 Built for Vardhaman Students</div>
-    <h1 class="hero-title">Track Your Attendance<br/><span class="gradient-text">& CGPA Instantly</span></h1>
-    <p class="hero-sub">No manual entry. No guesswork. Just click and see your real-time attendance, safe bunk count, and CGPA — pulled directly from the VCE portal.</p>
+    <div class="hero-inner">
+      <div class="hero-badge animate-fade">🎓 Built for Vardhaman Students</div>
+      <h1 class="hero-title animate-fade-up">
+        Track Your <span class="gradient-text">Attendance & CGPA</span><br/>Instantly
+      </h1>
+      <p class="hero-sub animate-fade-up delay-1">No manual entry. No guesswork. One click and see your real-time attendance, safe bunk count, and CGPA — pulled directly from the VCE portal.</p>
 
-    <div class="hero-steps">
-      <div class="step-item">
-        <div class="step-num">01</div>
-        <div class="step-text">Log in to VCE portal</div>
+      <div class="hero-actions animate-fade-up delay-2">
+        <a id="bookmarkletBtn" class="btn-primary" href="#">📊 VCE Tracker — Drag to Bookmarks</a>
+        <button class="btn-secondary" id="copyBtn">Copy Bookmarklet</button>
       </div>
-      <div class="step-arrow">→</div>
-      <div class="step-item">
-        <div class="step-num">02</div>
-        <div class="step-text">Drag bookmark below</div>
-      </div>
-      <div class="step-arrow">→</div>
-      <div class="step-item">
-        <div class="step-num">03</div>
-        <div class="step-text">Click it on the portal</div>
+      <p id="statusMsg" class="status-msg"></p>
+
+      <!-- Stats row -->
+      <div class="hero-stats animate-fade-up delay-3">
+        <div class="stat-item">
+          <div class="stat-num">75%</div>
+          <div class="stat-label">Minimum attendance required</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">1 click</div>
+          <div class="stat-label">To see all your data</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num">0 logins</div>
+          <div class="stat-label">No separate account needed</div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="hero-actions">
-      <a id="bookmarkletBtn" class="btn-primary" href="#">📊 VCE Tracker — Drag to Bookmarks</a>
-      <button class="btn-secondary" onclick="copyBookmarklet()">Copy Bookmarklet</button>
+  <!-- How It Works -->
+  <section class="how-section">
+    <div class="section-inner">
+      <div class="section-tag animate-on-scroll">How It Works</div>
+      <h2 class="section-title animate-on-scroll">Four Steps to <span class="gradient-text">Success</span></h2>
+      <p class="section-sub animate-on-scroll">Get your attendance and CGPA data in under a minute</p>
+
+      <div class="steps-grid">
+        <div class="step-card animate-on-scroll">
+          <div class="step-number">01</div>
+          <div class="step-icon">🌐</div>
+          <h3>Visit VCE Portal</h3>
+          <p>Go to student.vardhaman.org and log in with your college credentials as you normally would.</p>
+        </div>
+        <div class="step-card animate-on-scroll delay-1">
+          <div class="step-number">02</div>
+          <div class="step-icon">🔖</div>
+          <h3>Save the Bookmark</h3>
+          <p>Drag the VCE Tracker button from our homepage to your browser's bookmarks bar. One time setup.</p>
+        </div>
+        <div class="step-card animate-on-scroll delay-2">
+          <div class="step-number">03</div>
+          <div class="step-icon">⚡</div>
+          <h3>Click While on Portal</h3>
+          <p>While logged into the VCE portal, click the bookmark. It reads your data instantly using your session.</p>
+        </div>
+        <div class="step-card animate-on-scroll delay-3">
+          <div class="step-number">04</div>
+          <div class="step-icon">📊</div>
+          <h3>See Your Dashboard</h3>
+          <p>Your attendance, safe bunk count, CGPA and subject-wise breakdown loads in a beautiful dashboard.</p>
+        </div>
+      </div>
     </div>
-    <p id="statusMsg" class="status-msg"></p>
   </section>
 
   <!-- Features -->
-  <section class="features">
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">📈</div>
-        <h3>Live Attendance</h3>
-        <p>See every subject's attendance percentage pulled directly from your VCE portal session.</p>
+  <section class="features-section">
+    <div class="section-inner">
+      <div class="section-tag animate-on-scroll">Features</div>
+      <h2 class="section-title animate-on-scroll">Everything You <span class="gradient-text">Need</span></h2>
+
+      <div class="features-grid">
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon-wrap" style="background:rgba(37,99,235,0.1);">📈</div>
+          <h3>Live Attendance</h3>
+          <p>Subject-wise attendance percentages pulled directly from your VCE portal in real time.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-1">
+          <div class="feature-icon-wrap" style="background:rgba(0,229,160,0.1);">🎯</div>
+          <h3>Safe Bunk Count</h3>
+          <p>Know exactly how many classes you can skip while staying safely above the 75% threshold.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-2">
+          <div class="feature-icon-wrap" style="background:rgba(124,58,237,0.1);">🏆</div>
+          <h3>CGPA Insights</h3>
+          <p>Track your CPI semester by semester and log individual assessment marks per subject.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-3">
+          <div class="feature-icon-wrap" style="background:rgba(251,191,36,0.1);">🧮</div>
+          <h3>CGPA Calculator</h3>
+          <p>Predict your next semester CGPA by entering subjects, credits and expected grades.</p>
+          <a href="cgpa.html" class="feature-link">Try Calculator →</a>
+        </div>
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon-wrap" style="background:rgba(244,63,94,0.1);">🚨</div>
+          <h3>At Risk Alerts</h3>
+          <p>Color-coded indicators show which subjects need immediate attention before it's too late.</p>
+        </div>
+        <div class="feature-card animate-on-scroll delay-1">
+          <div class="feature-icon-wrap" style="background:rgba(56,189,248,0.1);">⚡</div>
+          <h3>One Click</h3>
+          <p>No separate login, no manual input. One bookmark click and everything loads instantly.</p>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>Safe Bunk Count</h3>
-        <p>Instantly know how many classes you can skip while staying above the 75% threshold.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🏆</div>
-        <h3>CGPA Insights</h3>
-        <p>Track your CPI semester by semester and log individual assessment marks per subject.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>One Click</h3>
-        <p>No login, no setup, no manual input. One bookmark click and everything loads instantly.</p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact-section">
+    <div class="section-inner">
+      <div class="section-tag animate-on-scroll">Contact</div>
+      <h2 class="section-title animate-on-scroll">Get In <span class="gradient-text">Touch</span></h2>
+      <p class="section-sub animate-on-scroll">Found a bug? Have a suggestion? Want to contribute? We'd love to hear from you.</p>
+
+      <div class="contact-grid animate-on-scroll">
+        <div class="contact-card">
+          <div class="contact-icon">📧</div>
+          <h3>Email Us</h3>
+          <p>Send us your feedback, bug reports, or suggestions</p>
+          <a href="mailto:vcetracker@gmail.com" class="contact-link">vcetracker@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">🐛</div>
+          <h3>Report a Bug</h3>
+          <p>Something not working? Let us know and we'll fix it ASAP</p>
+          <a href="mailto:vcetracker@gmail.com?subject=Bug Report" class="contact-link">Report Issue →</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">💡</div>
+          <h3>Suggest a Feature</h3>
+          <p>Have an idea to make VCE Tracker better for students?</p>
+          <a href="mailto:vcetracker@gmail.com?subject=Feature Request" class="contact-link">Share Idea →</a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
-  <p>© 2026 VCE Tracker · Built for Vardhaman College of Engineering students · <span class="footer-accent">Not affiliated with VCE</span></p>
-</footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" class="footer-logo"/>
+        <span class="footer-title">VCE Tracker</span>
+      </div>
+      <div class="footer-links">
+        <a href="cgpa.html" class="footer-link">CGPA Calculator</a>
+        <a href="privacy.html" class="footer-link">Privacy Policy</a>
+        <a href="mailto:vcetracker@gmail.com" class="footer-link">Contact</a>
+      </div>
+      <p class="footer-copy">© 2026 VCE Tracker · Built for Vardhaman College of Engineering · <span class="footer-accent">Not affiliated with VCE</span></p>
+    </div>
+  </footer>
 
   <script src="fetch.js"></script>
   <script>
-    // Theme toggle
+    // Theme
     const toggle = document.getElementById('themeToggle');
     const saved = localStorage.getItem('site_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
-
     toggle.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
@@ -95,6 +199,74 @@
       toggle.textContent = next === 'dark' ? '🌙' : '☀️';
       localStorage.setItem('site_theme', next);
     });
+
+    // Copy bookmarklet
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const code = document.getElementById('bookmarkletBtn').href;
+      navigator.clipboard.writeText(code);
+      const msg = document.getElementById('statusMsg');
+      msg.style.color = '#00e5a0';
+      msg.textContent = '✅ Copied! Paste it as a bookmark URL.';
+    });
+
+    // Particles
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = [];
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 2 + 0.5,
+          dx: (Math.random() - 0.5) * 0.3,
+          dy: Math.random() * 0.5 + 0.2,
+          opacity: Math.random() * 0.5 + 0.1
+        });
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = isDark
+          ? `rgba(255,255,255,${p.opacity})`
+          : `rgba(37,99,235,${p.opacity * 0.5})`;
+        ctx.fill();
+        p.y += p.dy;
+        p.x += p.dx;
+        if (p.y > canvas.height) { p.y = 0; p.x = Math.random() * canvas.width; }
+        if (p.x > canvas.width) p.x = 0;
+        if (p.x < 0) p.x = canvas.width;
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas();
+    createParticles();
+    animateParticles();
+    window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
   </script>
 </body>
 </html>

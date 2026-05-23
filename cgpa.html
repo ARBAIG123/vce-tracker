@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | CGPA Calculator</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
+    </div>
+    <div style="display:flex;gap:0.8rem;align-items:center;">
+      <a href="index.html" class="nav-link">Home</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <div class="cgpa-page">
+    <div class="cgpa-hero">
+      <div class="hero-badge">🎓 CGPA Calculator</div>
+      <h1 class="cgpa-title">Predict Your <span class="gradient-text">CGPA</span></h1>
+      <p class="cgpa-sub">Enter your subjects, credits and grades to calculate your semester GPA and predict your cumulative CGPA.</p>
+    </div>
+
+    <div class="cgpa-container">
+
+      <!-- Previous CGPA -->
+      <div class="cgpa-card">
+        <div class="cgpa-card-header">
+          <h3>Previous Academic Record</h3>
+          <p>Enter your existing CGPA if you want to predict cumulative GPA</p>
+        </div>
+        <div class="prev-cgpa-row">
+          <div class="form-group">
+            <label>Current CGPA (optional)</label>
+            <input type="number" id="prevCgpa" placeholder="e.g. 7.25" min="0" max="10" step="0.01"/>
+          </div>
+          <div class="form-group">
+            <label>Total Credits Completed</label>
+            <input type="number" id="prevCredits" placeholder="e.g. 24" min="0"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subjects -->
+      <div class="cgpa-card">
+        <div class="cgpa-card-header">
+          <h3>Current Semester Subjects</h3>
+          <p>Add your subjects with credit hours and expected/obtained grades</p>
+        </div>
+
+        <div id="subjectRows"></div>
+
+        <button class="add-subject-btn" id="addSubjectBtn">+ Add Subject</button>
+      </div>
+
+      <!-- Grade Scale -->
+      <div class="cgpa-card">
+        <div class="cgpa-card-header">
+          <h3>Grade Scale Reference</h3>
+        </div>
+        <div class="grade-scale">
+          <div class="grade-item"><span class="grade-badge" style="background:#0d2e1f;color:#00e5a0;">O</span><span>10 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#0d2531;color:#38bdf8;">A+</span><span>9 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#0d1f3c;color:#60a5fa;">A</span><span>8 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#1e2a0d;color:#a3e635;">B+</span><span>7 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#2a1e0d;color:#fbbf24;">B</span><span>6 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#2e1a0d;color:#fb923c;">C</span><span>5 points</span></div>
+          <div class="grade-item"><span class="grade-badge" style="background:#2e0d0d;color:#f87171;">F</span><span>0 points</span></div>
+        </div>
+      </div>
+
+      <!-- Calculate Button -->
+      <button class="calculate-btn" id="calculateBtn">Calculate CGPA →</button>
+
+      <!-- Results -->
+      <div class="cgpa-result" id="cgpaResult" style="display:none;">
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">Semester GPA</div>
+            <div class="result-value" id="semGpa">--</div>
+            <div class="result-sub">This semester</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Cumulative CGPA</div>
+            <div class="result-value green" id="cumCgpa">--</div>
+            <div class="result-sub">Overall</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Credits</div>
+            <div class="result-value" id="totalCredits">--</div>
+            <div class="result-sub">Completed</div>
+          </div>
+        </div>
+        <div class="result-message" id="resultMessage"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const gradePoints = { 'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'F': 0 };
+    let subjectCount = 0;
+
+    function addSubject() {
+      subjectCount++;
+      const row = document.createElement('div');
+      row.className = 'subject-input-row';
+      row.id = `subject-${subjectCount}`;
+      row.innerHTML = `
+        <div class="form-group flex2">
+          <label>Subject Name</label>
+          <input type="text" placeholder="e.g. Data Structures" class="sub-name"/>
+        </div>
+        <div class="form-group">
+          <label>Credits</label>
+          <input type="number" placeholder="3" min="1" max="5" class="sub-credits"/>
+        </div>
+        <div class="form-group">
+          <label>Grade</label>
+          <select class="sub-grade">
+            <option>O</option>
+            <option>A+</option>
+            <option>A</option>
+            <option>B+</option>
+            <option selected>B</option>
+            <option>C</option>
+            <option>F</option>
+          </select>
+        </div>
+        <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      `;
+      document.getElementById('subjectRows').appendChild(row);
+    }
+
+    function calculate() {
+      const rows = document.querySelectorAll('.subject-input-row');
+      if (!rows.length) { alert('Add at least one subject!'); return; }
+
+      let totalPoints = 0;
+      let totalCredits = 0;
+
+      rows.forEach(row => {
+        const credits = parseFloat(row.querySelector('.sub-credits').value) || 0;
+        const grade = row.querySelector('.sub-grade').value;
+        const points = gradePoints[grade] || 0;
+        totalPoints += credits * points;
+        totalCredits += credits;
+      });
+
+      const semGpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 0;
+
+      const prevCgpa = parseFloat(document.getElementById('prevCgpa').value) || 0;
+      const prevCredits = parseFloat(document.getElementById('prevCredits').value) || 0;
+
+      let cumCgpa = semGpa;
+      let allCredits = totalCredits;
+
+      if (prevCgpa && prevCredits) {
+        const totalPts = (prevCgpa * prevCredits) + totalPoints;
+        allCredits = prevCredits + totalCredits;
+        cumCgpa = (totalPts / allCredits).toFixed(2);
+      }
+
+      document.getElementById('semGpa').textContent = semGpa;
+      document.getElementById('cumCgpa').textContent = cumCgpa;
+      document.getElementById('totalCredits').textContent = allCredits;
+
+      const msg = document.getElementById('resultMessage');
+      if (cumCgpa >= 9) msg.innerHTML = '🏆 Outstanding! You\'re in the top tier.';
+      else if (cumCgpa >= 8) msg.innerHTML = '🎯 Excellent performance! Keep it up.';
+      else if (cumCgpa >= 7) msg.innerHTML = '✅ Good job! Room to push higher.';
+      else if (cumCgpa >= 6) msg.innerHTML = '⚠️ Average. Focus on improvement next sem.';
+      else msg.innerHTML = '📚 Below average. Attend more classes and study harder.';
+
+      document.getElementById('cgpaResult').style.display = 'block';
+      document.getElementById('cgpaResult').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('addSubjectBtn').addEventListener('click', addSubject);
+    document.getElementById('calculateBtn').addEventListener('click', calculate);
+
+    // Add 4 subjects by default
+    for (let i = 0; i < 4; i++) addSubject();
+
+    // Theme
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+  </script>
+</body>
+</html>

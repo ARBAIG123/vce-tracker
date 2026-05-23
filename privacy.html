@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | Privacy Policy</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
+    </div>
+    <div style="display:flex;gap:0.8rem;align-items:center;">
+      <a href="index.html" class="nav-link">Home</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <div class="legal-page">
+    <div class="legal-header">
+      <h1>Privacy Policy</h1>
+      <p>Last updated: May 2026</p>
+    </div>
+
+    <div class="legal-content">
+      <div class="legal-section">
+        <h2>1. Overview</h2>
+        <p>VCE Tracker is a student-built tool designed to help Vardhaman College of Engineering students track their attendance and CGPA. We are committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>2. Data We Collect</h2>
+        <p>VCE Tracker does not collect, store, or transmit any personal data to external servers. All data including your attendance percentages, CGPA, name, and assessment records are stored locally in your browser using localStorage or Chrome extension storage. This data never leaves your device.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>3. How It Works</h2>
+        <p>When you use the bookmarklet or Chrome extension on the VCE student portal, the tool reads your attendance and CGPA data directly from the portal page using your existing authenticated session. No login credentials are ever accessed, stored, or transmitted by VCE Tracker.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>4. Third Party Services</h2>
+        <p>VCE Tracker does not use any third-party analytics, advertising, or tracking services. The tool does not use cookies. Google Fonts is loaded for typography purposes only.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>5. Affiliation Disclaimer</h2>
+        <p>VCE Tracker is an independent student project and is not officially affiliated with, endorsed by, or connected to Vardhaman College of Engineering or its administration. Use of this tool is at your own discretion.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>6. Data Deletion</h2>
+        <p>You can delete all locally stored data at any time by clicking "Sign Out" in the dashboard, clearing your browser's localStorage, or uninstalling the Chrome extension. No data exists on any server to delete.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>7. Contact</h2>
+        <p>If you have any questions about this privacy policy, contact us at <a href="mailto:vcetracker@gmail.com" style="color:var(--accent2);">vcetracker@gmail.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+  </script>
+</body>
+</html>
