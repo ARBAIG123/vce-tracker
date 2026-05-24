@@ -226,7 +226,10 @@ Keep responses concise, clear, and helpful. Use numbers and formulas when releva
           body: JSON.stringify({ messages, systemPrompt: SYSTEM_PROMPT })
         });
 
-        if (!response.ok) throw new Error('API error');
+        if (!response.ok) {
+  const errText = await response.text();
+  throw new Error(`API error ${response.status}: ${errText}`);
+}
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -259,8 +262,9 @@ Keep responses concise, clear, and helpful. Use numbers and formulas when releva
         contentDiv.closest('.chat-message').classList.remove('streaming');
 
       } catch (err) {
-        contentDiv.innerHTML = '<p style="color:var(--red)">Sorry, something went wrong. Please try again.</p>';
-      }
+  contentDiv.innerHTML = `<p style="color:var(--red)">Error: ${err.message}</p>`;
+  console.error('Full error:', err);
+}
 
       setLoading(false);
     }
