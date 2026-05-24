@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | AI Assistant</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
+    </div>
+    <div style="display:flex;gap:0.8rem;align-items:center;">
+      <a href="dashboard.html" class="nav-link">← Dashboard</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <div class="chat-page">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-avatar">🤖</div>
+      <div>
+        <h1 class="chat-title">VCE <span class="gradient-text">AI Assistant</span></h1>
+        <p class="chat-sub">Ask me anything about your attendance, CGPA, or how to use VCE Tracker</p>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="suggestions" id="suggestions">
+      <button class="suggestion-chip" data-q="How many classes do I need to attend to reach 75% attendance?">How many classes to reach 75%?</button>
+      <button class="suggestion-chip" data-q="How do I use the bookmarklet to fetch my data?">How to use the bookmarklet?</button>
+      <button class="suggestion-chip" data-q="How is CGPA calculated in VCE?">How is CGPA calculated?</button>
+      <button class="suggestion-chip" data-q="If I have 60% attendance with 50 total classes, how many do I need to attend to reach 75%?">Calculate my attendance recovery</button>
+      <button class="suggestion-chip" data-q="What does the bunk calculator do?">What is the bunk calculator?</button>
+      <button class="suggestion-chip" data-q="How does attendance impact change early vs late semester?">Early vs late semester impact?</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message assistant">
+        <div class="message-avatar">🤖</div>
+        <div class="message-content">
+          <p>Hi! I'm your VCE Tracker AI assistant. I can help you with:</p>
+          <ul>
+            <li>Attendance calculations and recovery strategies</li>
+            <li>CGPA predictions and grade planning</li>
+            <li>How to use VCE Tracker features</li>
+            <li>Bunk count and safe attendance questions</li>
+          </ul>
+          <p>What would you like to know?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+      <div class="chat-input-box">
+        <textarea 
+          id="chatInput" 
+          placeholder="Ask about attendance, CGPA, or VCE Tracker..." 
+          rows="1"
+          maxlength="500"
+        ></textarea>
+        <button class="chat-send-btn" id="sendBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <p class="chat-disclaimer">Only answers questions related to VCE Tracker and attendance/CGPA topics</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Theme
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+
+    const SYSTEM_PROMPT = `You are a smart AI assistant for VCE Tracker — a web tool built for Vardhaman College of Engineering students to track their attendance and CGPA.
+
+You ONLY answer questions related to:
+1. Attendance calculations, percentages, recovery strategies
+2. CGPA calculations, grade points, semester GPA
+3. How to use VCE Tracker features (bookmarklet, dashboard, bunk calculator, CGPA calculator, manual attendance tracker)
+4. General academic advice for VCE students (study tips, exam prep)
+5. Answering math questions about attendance like "If I have X% with Y classes, how many do I need to attend to reach Z%?"
+
+VCE Tracker features:
+- Bookmarklet: drag to browser bar, click while on student.vardhaman.org to fetch live data
+- Dashboard: shows attendance %, safe bunk count, CGPA, subject-wise breakdown
+- Bunk Calculator: select a subject to see how many classes you can safely skip
+- CGPA Calculator: enter subjects, credits, grades to predict your GPA
+- Manual Attendance Tracker: calendar to manually mark present/absent/holiday per subject
+- AI Assistant: that's you!
+
+Attendance rules at VCE:
+- Minimum 75% attendance required to sit for exams
+- Formula: (Classes Attended / Total Classes) × 100
+- To recover attendance: Classes Needed = (0.75 × Total - Attended) / 0.25
+- Safe bunks formula: (Attended - 0.75 × Total) / 0.75
+
+Grade points at VCE:
+- O = 10, A+ = 9, A = 8, B+ = 7, B = 6, C = 5, F = 0
+- SGPA = Sum(Grade Points × Credits) / Sum(Credits)
+
+If someone asks something completely unrelated (movies, cooking, general knowledge, politics, etc.), politely decline and redirect them to attendance/CGPA topics.
+
+Keep responses concise, clear, and helpful. Use numbers and formulas when relevant. Be friendly and encouraging to students.`;
+
+    let messages = [];
+    let isLoading = false;
+
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Auto resize textarea
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+
+    // Send on Enter (not Shift+Enter)
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+
+    // Suggestion chips
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chatInput.value = chip.dataset.q;
+        document.getElementById('suggestions').style.display = 'none';
+        sendMessage();
+      });
+    });
+
+    function addMessage(role, content, isStreaming = false) {
+      const div = document.createElement('div');
+      div.className = `chat-message ${role} ${isStreaming ? 'streaming' : ''}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.textContent = role === 'assistant' ? '🤖' : '👤';
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.innerHTML = formatMessage(content);
+
+      div.appendChild(avatar);
+      div.appendChild(contentDiv);
+      chatMessages.appendChild(div);
+      scrollToBottom();
+      return contentDiv;
+    }
+
+    function formatMessage(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br/>')
+        .replace(/^/, '<p>')
+        .replace(/$/, '</p>');
+    }
+
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function setLoading(loading) {
+      isLoading = loading;
+      sendBtn.disabled = loading;
+      chatInput.disabled = loading;
+      sendBtn.innerHTML = loading
+        ? '<div class="send-spinner"></div>'
+        : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+    }
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isLoading) return;
+
+      // Hide suggestions after first message
+      document.getElementById('suggestions').style.display = 'none';
+
+      // Add user message
+      addMessage('user', text);
+      messages.push({ role: 'user', content: text });
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+
+      setLoading(true);
+
+      // Add streaming assistant message
+      const contentDiv = addMessage('assistant', '', true);
+      let fullResponse = '';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages, systemPrompt: SYSTEM_PROMPT })
+        });
+
+        if (!response.ok) throw new Error('API error');
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim();
+              if (data === '[DONE]') continue;
+              try {
+                const parsed = JSON.parse(data);
+                const text = parsed.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (text) {
+                  fullResponse += text;
+                  contentDiv.innerHTML = formatMessage(fullResponse);
+                  scrollToBottom();
+                }
+              } catch {}
+            }
+          }
+        }
+
+        messages.push({ role: 'assistant', content: fullResponse });
+        contentDiv.closest('.chat-message').classList.remove('streaming');
+
+      } catch (err) {
+        contentDiv.innerHTML = '<p style="color:var(--red)">Sorry, something went wrong. Please try again.</p>';
+      }
+
+      setLoading(false);
+    }
+  </script>
+</body>
+</html>
