@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | Attendance Tracker</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
+    </div>
+    <div style="display:flex;gap:0.8rem;align-items:center;">
+      <a href="dashboard.html" class="nav-link">← Dashboard</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <div class="att-page">
+
+    <!-- Header -->
+    <div class="att-header">
+      <div class="hero-badge">📅 Manual Tracker</div>
+      <h1 class="att-title">Attendance <span class="gradient-text">Calendar</span></h1>
+      <p class="att-sub">Manually track your daily attendance. Mark classes as present, absent, or holiday and watch your percentage update in real time.</p>
+    </div>
+
+    <!-- Subject Setup -->
+    <div class="att-setup" id="attSetup">
+      <div class="cgpa-card">
+        <div class="cgpa-card-header">
+          <h3>Setup Your Subjects</h3>
+          <p>Add the subjects you want to track manually</p>
+        </div>
+        <div id="setupSubjects"></div>
+        <button class="add-subject-btn" id="addSubjectSetupBtn">+ Add Subject</button>
+        <button class="calculate-btn" style="margin-top:1rem;" id="startTrackingBtn">Start Tracking →</button>
+      </div>
+    </div>
+
+    <!-- Main Tracker -->
+    <div class="att-tracker" id="attTracker" style="display:none;">
+
+      <!-- Early Semester Warning -->
+      <div class="early-warning" id="earlyWarning" style="display:none;">
+        <div class="warning-icon">⚡</div>
+        <div>
+          <div class="warning-title">Early Semester — Every Class Counts More!</div>
+          <div class="warning-sub" id="warningText"></div>
+        </div>
+      </div>
+
+      <!-- Subject Tabs -->
+      <div class="subject-tabs" id="subjectTabs"></div>
+
+      <!-- Stats Row -->
+      <div class="att-stats" id="attStats"></div>
+
+      <!-- Calendar -->
+      <div class="cgpa-card" style="margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+          <div>
+            <div class="dash-section-label" style="margin:0;">Calendar</div>
+            <div id="calMonthLabel" style="font-size:1.1rem;font-weight:700;margin-top:0.2rem;"></div>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="cal-nav-btn" id="prevMonth">←</button>
+            <button class="cal-nav-btn" id="nextMonth">→</button>
+          </div>
+        </div>
+
+        <!-- Day headers -->
+        <div class="cal-days-header">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+
+        <!-- Calendar grid -->
+        <div class="cal-grid" id="calGrid"></div>
+
+        <!-- Legend -->
+        <div class="cal-legend">
+          <span class="legend-item"><span class="legend-dot present"></span>Present</span>
+          <span class="legend-item"><span class="legend-dot absent"></span>Absent</span>
+          <span class="legend-item"><span class="legend-dot holiday"></span>Holiday/No class</span>
+          <span class="legend-item"><span class="legend-dot unmarked"></span>Not marked</span>
+        </div>
+      </div>
+
+      <!-- Impact Calculator -->
+      <div class="cgpa-card" style="margin-top:1rem;">
+        <div class="cgpa-card-header">
+          <h3>📈 Attendance Impact Calculator</h3>
+          <p>See how much each class affects your percentage at different stages</p>
+        </div>
+        <div class="impact-grid" id="impactGrid"></div>
+      </div>
+
+      <!-- Reset -->
+      <div style="text-align:center;margin-top:2rem;">
+        <button class="signout-btn" id="resetTrackerBtn">Reset & Change Subjects</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Theme
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+
+    let subjects = [];
+    let currentSubjectIndex = 0;
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+
+    const STORAGE_KEY = 'vce_manual_attendance';
+
+    function getAttendanceData() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    }
+
+    function saveAttendanceData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function getSubjectKey(subjectName, year, month, day) {
+      return `${subjectName}_${year}_${month}_${day}`;
+    }
+
+    // Setup subjects
+    let setupCount = 0;
+    function addSetupSubject(name = '') {
+      setupCount++;
+      const div = document.createElement('div');
+      div.className = 'subject-input-row';
+      div.id = `setup-${setupCount}`;
+      div.innerHTML = `
+        <div class="form-group flex2">
+          <label>Subject Name</label>
+          <input type="text" placeholder="e.g. Data Structures" class="setup-sub-name" value="${name}"/>
+        </div>
+        <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+      `;
+      document.getElementById('setupSubjects').appendChild(div);
+    }
+
+    document.getElementById('addSubjectSetupBtn').addEventListener('click', () => addSetupSubject());
+
+    document.getElementById('startTrackingBtn').addEventListener('click', () => {
+      const names = [...document.querySelectorAll('.setup-sub-name')]
+        .map(i => i.value.trim())
+        .filter(Boolean);
+
+      if (!names.length) { alert('Add at least one subject!'); return; }
+
+      subjects = names;
+      localStorage.setItem('vce_tracker_subjects', JSON.stringify(subjects));
+      document.getElementById('attSetup').style.display = 'none';
+      document.getElementById('attTracker').style.display = 'block';
+      initTracker();
+    });
+
+    function initTracker() {
+      renderSubjectTabs();
+      renderStats();
+      renderCalendar();
+      renderImpactGrid();
+      checkEarlyWarning();
+    }
+
+    function renderSubjectTabs() {
+      document.getElementById('subjectTabs').innerHTML = subjects.map((s, i) => `
+        <button class="subject-tab ${i === currentSubjectIndex ? 'active' : ''}" onclick="switchSubject(${i})">${s}</button>
+      `).join('');
+    }
+
+    window.switchSubject = function(i) {
+      currentSubjectIndex = i;
+      renderSubjectTabs();
+      renderStats();
+      renderCalendar();
+      renderImpactGrid();
+      checkEarlyWarning();
+    }
+
+    function getSubjectStats(subjectName) {
+      const data = getAttendanceData();
+      let present = 0, absent = 0;
+
+      Object.keys(data).forEach(key => {
+        if (key.startsWith(subjectName + '_')) {
+          if (data[key] === 'present') present++;
+          else if (data[key] === 'absent') absent++;
+        }
+      });
+
+      const total = present + absent;
+      const pct = total > 0 ? Math.round((present / total) * 100) : 0;
+      return { present, absent, total, pct };
+    }
+
+    function renderStats() {
+      const s = subjects[currentSubjectIndex];
+      const stats = getSubjectStats(s);
+      const color = stats.pct >= 85 ? '#00e5a0' : stats.pct >= 75 ? '#fbbf24' : '#f43f5e';
+      const status = stats.pct >= 85 ? '🟢 Safe' : stats.pct >= 75 ? '🟡 Borderline' : '🔴 At Risk';
+
+      const safeBunks = stats.pct >= 75
+        ? Math.floor((stats.present - 0.75 * stats.total) / 0.75)
+        : 0;
+      const needed = stats.pct < 75 && stats.total > 0
+        ? Math.ceil((0.75 * stats.total - stats.present) / 0.25)
+        : 0;
+
+      document.getElementById('attStats').innerHTML = `
+        <div class="att-stat-card">
+          <div class="att-stat-num" style="color:${color}">${stats.pct}%</div>
+          <div class="att-stat-label">Attendance</div>
+          <div style="font-size:0.75rem;color:${color};margin-top:0.2rem;">${status}</div>
+        </div>
+        <div class="att-stat-card">
+          <div class="att-stat-num" style="color:#00e5a0">${stats.present}</div>
+          <div class="att-stat-label">Present</div>
+        </div>
+        <div class="att-stat-card">
+          <div class="att-stat-num" style="color:#f43f5e">${stats.absent}</div>
+          <div class="att-stat-label">Absent</div>
+        </div>
+        <div class="att-stat-card">
+          <div class="att-stat-num">${stats.total}</div>
+          <div class="att-stat-label">Total Classes</div>
+        </div>
+        <div class="att-stat-card">
+          <div class="att-stat-num" style="color:${safeBunks > 0 ? '#00e5a0' : '#f43f5e'}">
+            ${safeBunks > 0 ? safeBunks : needed}
+          </div>
+          <div class="att-stat-label">${safeBunks > 0 ? 'Safe Bunks' : 'Classes Needed'}</div>
+        </div>
+      `;
+    }
+
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('calMonthLabel').textContent = `${months[currentMonth]} ${currentYear}`;
+
+      const data = getAttendanceData();
+      const subject = subjects[currentSubjectIndex];
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const today = new Date();
+
+      let html = '';
+
+      // Empty cells before first day
+      for (let i = 0; i < firstDay; i++) {
+        html += `<div class="cal-cell empty"></div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = getSubjectKey(subject, currentYear, currentMonth, d);
+        const status = data[key] || 'none';
+        const isToday = today.getDate() === d && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+        const isFuture = new Date(currentYear, currentMonth, d) > today;
+
+        html += `
+          <div class="cal-cell ${status} ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}"
+               onclick="${isFuture ? '' : `cycleStatus('${key}')`}">
+            <span class="cal-date">${d}</span>
+            <span class="cal-status-icon">
+              ${status === 'present' ? '✓' : status === 'absent' ? '✗' : status === 'holiday' ? '—' : ''}
+            </span>
+          </div>
+        `;
+      }
+
+      document.getElementById('calGrid').innerHTML = html;
+    }
+
+    window.cycleStatus = function(key) {
+      const data = getAttendanceData();
+      const current = data[key] || 'none';
+      const next = current === 'none' ? 'present' : current === 'present' ? 'absent' : current === 'absent' ? 'holiday' : 'none';
+      if (next === 'none') delete data[key];
+      else data[key] = next;
+      saveAttendanceData(data);
+      renderStats();
+      renderCalendar();
+      renderImpactGrid();
+      checkEarlyWarning();
+    }
+
+    function renderImpactGrid() {
+      const stats = getSubjectStats(subjects[currentSubjectIndex]);
+      const scenarios = [10, 20, 30, 50, 75, 100];
+
+      document.getElementById('impactGrid').innerHTML = scenarios.map(total => {
+        const attended = Math.round((stats.pct / 100) * (stats.total || total));
+        const currentPct = stats.total > 0 ? stats.pct : Math.round((attended / total) * 100);
+        const afterAttend = Math.round(((attended + 1) / (total + 1)) * 100);
+        const afterAbsent = Math.round((attended / (total + 1)) * 100);
+        const impact = afterAttend - (stats.total > 0 ? currentPct : Math.round((attended / total) * 100));
+
+        return `
+          <div class="impact-card">
+            <div class="impact-total">${total} classes</div>
+            <div class="impact-row">
+              <span class="impact-label">Attend 1 more</span>
+              <span class="impact-val green">+${impact}%</span>
+            </div>
+            <div class="impact-row">
+              <span class="impact-label">Miss 1 class</span>
+              <span class="impact-val red">-${(stats.total > 0 ? currentPct : Math.round((attended/total)*100)) - afterAbsent}%</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function checkEarlyWarning() {
+      const stats = getSubjectStats(subjects[currentSubjectIndex]);
+      const warning = document.getElementById('earlyWarning');
+
+      if (stats.total < 20) {
+        const impactPerClass = stats.total > 0
+          ? Math.round((1 / (stats.total + 1)) * 100)
+          : 10;
+        document.getElementById('warningText').textContent =
+          `You've had ${stats.total} classes so far. Each class you attend now changes your percentage by ~${impactPerClass}%. This impact will shrink as the semester progresses.`;
+        warning.style.display = 'flex';
+      } else {
+        warning.style.display = 'none';
+      }
+    }
+
+    // Calendar navigation
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      renderCalendar();
+    });
+
+    document.getElementById('resetTrackerBtn').addEventListener('click', () => {
+      if (confirm('Reset subjects? Your attendance data will be kept.')) {
+        localStorage.removeItem('vce_tracker_subjects');
+        document.getElementById('attTracker').style.display = 'none';
+        document.getElementById('attSetup').style.display = 'block';
+        document.getElementById('setupSubjects').innerHTML = '';
+        setupCount = 0;
+        for (let i = 0; i < 4; i++) addSetupSubject();
+      }
+    });
+
+    // Init
+    const savedSubjects = localStorage.getItem('vce_tracker_subjects');
+    if (savedSubjects) {
+      subjects = JSON.parse(savedSubjects);
+      document.getElementById('attSetup').style.display = 'none';
+      document.getElementById('attTracker').style.display = 'block';
+      initTracker();
+    } else {
+      for (let i = 0; i < 4; i++) addSetupSubject();
+    }
+  </script>
+</body>
+</html>
