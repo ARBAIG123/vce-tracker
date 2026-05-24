@@ -26,6 +26,7 @@
     <!-- Top progress bar -->
     <div class="top-progress-bar" id="topProgressBar"></div>
 
+    <!-- Navbar -->
     <nav class="dash-navbar">
       <div class="dash-nav-left">
         <img src="logo.png" class="dash-nav-logo"/>
@@ -39,166 +40,391 @@
       </div>
     </nav>
 
-    <!-- Greeting Banner -->
-    <div class="greeting-banner" id="greetingBanner"></div>
+    <!-- Tab Content -->
+    <div class="tab-content-wrapper">
 
-    <!-- Overview -->
-    <div class="dash-section fade-section">
-      <div class="dash-section-label">Semester Overview</div>
-      <div class="overview-grid" id="overviewGrid"></div>
-    </div>
+      <!-- TAB 1: Dashboard -->
+      <div class="tab-content active" id="tab-dashboard">
+        <div class="greeting-banner" id="greetingBanner"></div>
 
-    <!-- Analytics -->
-    <div class="dash-section fade-section" style="margin-top:1.5rem;">
-      <div class="dash-section-label">Analytics</div>
-      <div class="analytics-grid">
-        <div class="analytics-card">
-          <div class="analytics-title">Overall Attendance</div>
-          <div class="ring-container">
-            <canvas id="overallRing" width="130" height="130"></canvas>
-            <div class="ring-label">
-              <div class="ring-pct" id="overallPct">--%</div>
-              <div class="ring-sub" id="overallClasses">--</div>
+        <div class="dash-section fade-section">
+          <div class="dash-section-label">Semester Overview</div>
+          <div class="overview-grid" id="overviewGrid"></div>
+        </div>
+
+        <div class="dash-section fade-section" style="margin-top:1.5rem;">
+          <div class="dash-section-label">Analytics</div>
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <div class="analytics-title">Overall Attendance</div>
+              <div class="ring-container">
+                <canvas id="overallRing" width="130" height="130"></canvas>
+                <div class="ring-label">
+                  <div class="ring-pct" id="overallPct">--%</div>
+                  <div class="ring-sub" id="overallClasses">--</div>
+                </div>
+              </div>
+              <div class="analytics-status" id="overallStatus"></div>
+            </div>
+            <div class="analytics-card">
+              <div class="analytics-title">CGPA</div>
+              <div id="cgpaAnalytics"></div>
+            </div>
+            <div class="analytics-card">
+              <div class="analytics-title">Bunk Calculator</div>
+              <div class="bunk-chips" id="bunkChips"></div>
+              <div class="bunk-result" id="bunkResult">
+                <span style="color:var(--text3);font-size:0.82rem;">Select a subject above</span>
+              </div>
             </div>
           </div>
-          <div class="analytics-status" id="overallStatus"></div>
         </div>
-        <div class="analytics-card">
-          <div class="analytics-title">CGPA</div>
-          <div id="cgpaAnalytics"></div>
-        </div>
-        <div class="analytics-card">
-          <div class="analytics-title">Bunk Calculator</div>
-          <div class="bunk-chips" id="bunkChips"></div>
-          <div class="bunk-result" id="bunkResult">
-            <span style="color:var(--text3);font-size:0.82rem;">Select a subject above</span>
+
+        <div class="attendance-header fade-section">
+          <div class="dash-section-label" style="margin:0;">Attendance</div>
+          <div class="filter-tabs">
+            <button class="filter-tab active" id="tabAll">All</button>
+            <button class="filter-tab" id="tabSafe">Safe</button>
+            <button class="filter-tab" id="tabBorderline">Borderline</button>
+            <button class="filter-tab" id="tabRisk">At Risk</button>
           </div>
+        </div>
+        <div class="subjects-grid" id="subjectsGrid"></div>
+
+        <div class="signout-section">
+          <button class="signout-btn" id="signOutBtn">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- TAB 2: Calendar -->
+      <div class="tab-content" id="tab-calendar">
+        <div class="att-page" style="padding-top:1rem;">
+          <div class="att-header">
+            <div class="hero-badge">📅 Manual Tracker</div>
+            <h1 class="att-title">Attendance <span class="gradient-text">Calendar</span></h1>
+            <p class="att-sub">Manually track your daily attendance per subject</p>
+          </div>
+
+          <div class="att-setup" id="attSetup">
+            <div class="cgpa-card">
+              <div class="cgpa-card-header">
+                <h3>Setup Your Subjects</h3>
+                <p>Add subjects you want to track manually</p>
+              </div>
+              <div id="setupSubjects"></div>
+              <button class="add-subject-btn" id="addSubjectSetupBtn">+ Add Subject</button>
+              <button class="calculate-btn" style="margin-top:1rem;" id="startTrackingBtn">Start Tracking →</button>
+            </div>
+          </div>
+
+          <div class="att-tracker" id="attTracker" style="display:none;">
+            <div class="early-warning" id="earlyWarning" style="display:none;">
+              <div class="warning-icon">⚡</div>
+              <div>
+                <div class="warning-title">Early Semester — Every Class Counts More!</div>
+                <div class="warning-sub" id="warningText"></div>
+              </div>
+            </div>
+
+            <div class="subject-tabs" id="subjectTabs"></div>
+            <div class="att-stats" id="attStats"></div>
+
+            <div class="cgpa-card" style="margin-top:1rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+                <div>
+                  <div class="dash-section-label" style="margin:0;">Calendar</div>
+                  <div id="calMonthLabel" style="font-size:1.1rem;font-weight:700;margin-top:0.2rem;"></div>
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                  <button class="cal-nav-btn" id="prevMonth">←</button>
+                  <button class="cal-nav-btn" id="nextMonth">→</button>
+                </div>
+              </div>
+              <div class="cal-days-header">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="cal-legend">
+                <span class="legend-item"><span class="legend-dot present"></span>Present</span>
+                <span class="legend-item"><span class="legend-dot absent"></span>Absent</span>
+                <span class="legend-item"><span class="legend-dot holiday"></span>Holiday</span>
+                <span class="legend-item"><span class="legend-dot unmarked"></span>Not marked</span>
+              </div>
+            </div>
+
+            <div class="cgpa-card" style="margin-top:1rem;">
+              <div class="cgpa-card-header">
+                <h3>📈 Impact Calculator</h3>
+                <p>How much each class affects your percentage</p>
+              </div>
+              <div class="impact-grid" id="impactGrid"></div>
+            </div>
+
+            <div style="text-align:center;margin-top:2rem;">
+              <button class="signout-btn" id="resetTrackerBtn">Reset Subjects</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: CGPA Calculator -->
+      <div class="tab-content" id="tab-cgpa">
+        <div class="cgpa-page" style="padding-top:1rem;">
+          <div class="cgpa-hero">
+            <div class="hero-badge">🎓 CGPA Calculator</div>
+            <h1 class="cgpa-title">Predict Your <span class="gradient-text">CGPA</span></h1>
+            <p class="cgpa-sub">Enter subjects, credits and grades to calculate your GPA</p>
+          </div>
+
+          <div class="cgpa-container">
+            <div class="cgpa-card">
+              <div class="cgpa-card-header">
+                <h3>Previous Academic Record</h3>
+                <p>Optional — for cumulative CGPA prediction</p>
+              </div>
+              <div class="prev-cgpa-row">
+                <div class="form-group">
+                  <label>Current CGPA (optional)</label>
+                  <input type="number" id="prevCgpa" placeholder="e.g. 7.25" min="0" max="10" step="0.01"/>
+                </div>
+                <div class="form-group">
+                  <label>Total Credits Completed</label>
+                  <input type="number" id="prevCredits" placeholder="e.g. 24" min="0"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="cgpa-card">
+              <div class="cgpa-card-header">
+                <h3>Current Semester Subjects</h3>
+                <p>Add subjects with credit hours and grades</p>
+              </div>
+              <div id="subjectRows"></div>
+              <button class="add-subject-btn" id="addSubjectBtn">+ Add Subject</button>
+            </div>
+
+            <div class="cgpa-card">
+              <div class="cgpa-card-header"><h3>Grade Scale</h3></div>
+              <div class="grade-scale">
+                <div class="grade-item"><span class="grade-badge" style="background:#0d2e1f;color:#00e5a0;">O</span><span>10</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#0d2531;color:#38bdf8;">A+</span><span>9</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#0d1f3c;color:#60a5fa;">A</span><span>8</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#1e2a0d;color:#a3e635;">B+</span><span>7</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#2a1e0d;color:#fbbf24;">B</span><span>6</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#2e1a0d;color:#fb923c;">C</span><span>5</span></div>
+                <div class="grade-item"><span class="grade-badge" style="background:#2e0d0d;color:#f87171;">F</span><span>0</span></div>
+              </div>
+            </div>
+
+            <button class="calculate-btn" id="calculateCgpaBtn">Calculate CGPA →</button>
+
+            <div class="cgpa-result" id="cgpaResult" style="display:none;">
+              <div class="result-grid">
+                <div class="result-card">
+                  <div class="result-label">Semester GPA</div>
+                  <div class="result-value" id="semGpa">--</div>
+                  <div class="result-sub">This semester</div>
+                </div>
+                <div class="result-card">
+                  <div class="result-label">Cumulative CGPA</div>
+                  <div class="result-value green" id="cumCgpa">--</div>
+                  <div class="result-sub">Overall</div>
+                </div>
+                <div class="result-card">
+                  <div class="result-label">Total Credits</div>
+                  <div class="result-value" id="totalCreditsResult">--</div>
+                  <div class="result-sub">Completed</div>
+                </div>
+              </div>
+              <div class="result-message" id="resultMessage"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: AI Chat -->
+      <div class="tab-content" id="tab-chat">
+        <div class="chat-page" style="padding-top:1rem;padding-bottom:80px;">
+          <div class="chat-header">
+            <div class="chat-avatar">🤖</div>
+            <div>
+              <h1 class="chat-title">VCE <span class="gradient-text">AI Assistant</span></h1>
+              <p class="chat-sub">Ask about attendance, CGPA, or VCE Tracker</p>
+            </div>
+          </div>
+
+          <div class="suggestions" id="suggestions">
+            <button class="suggestion-chip" data-q="How many classes do I need to reach 75% attendance?">How to reach 75%?</button>
+            <button class="suggestion-chip" data-q="How do I use the bookmarklet?">How to use bookmarklet?</button>
+            <button class="suggestion-chip" data-q="How is CGPA calculated at VCE?">How is CGPA calculated?</button>
+            <button class="suggestion-chip" data-q="If I have 60% with 50 total classes, how many do I need to reach 75%?">Calculate attendance recovery</button>
+            <button class="suggestion-chip" data-q="Why does attendance matter more early in the semester?">Early semester impact?</button>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-message assistant">
+              <div class="message-avatar">🤖</div>
+              <div class="message-content">
+                <p>Hi! I'm your VCE Tracker AI. Ask me about attendance, CGPA calculations, or how to use any feature!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area-inline">
+            <div class="chat-input-box-inline">
+              <textarea id="chatInput" placeholder="Ask about attendance, CGPA..." rows="1" maxlength="500"></textarea>
+              <button class="chat-send-btn" id="sendBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Subject Detail Page -->
+    <div class="detail-page" id="detailPage" style="display:none;">
+      <nav class="dash-navbar">
+        <div class="dash-nav-left">
+          <button class="back-btn" id="backBtn">← Back</button>
+          <div>
+            <div class="dash-nav-title" id="detailSubjectName">Subject</div>
+            <div class="dash-nav-sub" id="detailSubjectType">Theory</div>
+          </div>
+        </div>
+        <div class="dash-nav-right">
+          <button class="theme-toggle" id="themeToggle2">🌙</button>
+        </div>
+      </nav>
+
+      <div class="detail-content">
+        <div class="detail-stats">
+          <div class="detail-stat-card">
+            <canvas id="detailRing" width="90" height="90"></canvas>
+            <div class="detail-stat-info">
+              <div class="detail-stat-label">Attendance</div>
+              <div class="detail-stat-value" id="detailAttended">--/--</div>
+              <div class="detail-stat-sub" id="detailStatus">--</div>
+            </div>
+          </div>
+          <div class="detail-stat-card">
+            <canvas id="marksRing" width="90" height="90"></canvas>
+            <div class="detail-stat-info">
+              <div class="detail-stat-label">Overall Marks</div>
+              <div class="detail-stat-value" id="detailMarks">0/0</div>
+              <div class="detail-stat-sub" id="detailAssessments">0 assessments</div>
+            </div>
+          </div>
+          <div class="detail-stat-card best-score-card">
+            <div class="best-score-icon">🏆</div>
+            <div class="detail-stat-info">
+              <div class="detail-stat-label">Best Score</div>
+              <div class="detail-stat-value" id="detailBestScore">No data</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="assessments-section">
+          <div class="assessments-header">
+            <div class="dash-section-label" style="margin:0;">Assessments</div>
+            <button class="add-btn" id="addAssessmentBtn">+ Add Assessment</button>
+          </div>
+          <div class="add-form" id="addForm" style="display:none;">
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Title *</label>
+                <input type="text" id="formTitle" placeholder="e.g. Assignment 1"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Category</label>
+                <select id="formCategory">
+                  <option>Assignment</option>
+                  <option>Lab Record</option>
+                  <option>CAT-1</option>
+                  <option>CAT-2</option>
+                  <option>Semester</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="formDate"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Marks Obtained *</label>
+                <input type="number" id="formObtained" placeholder="e.g. 18"/>
+              </div>
+              <div class="form-group">
+                <label>Out Of *</label>
+                <input type="number" id="formOutOf" placeholder="e.g. 20"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full">
+                <label>Notes</label>
+                <input type="text" id="formNotes" placeholder="Optional notes..."/>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="save-btn" id="saveAssessmentBtn">Save</button>
+              <button class="cancel-btn" id="cancelAssessmentBtn">Cancel</button>
+            </div>
+          </div>
+          <div id="assessmentsList"></div>
         </div>
       </div>
     </div>
 
-    <!-- Attendance -->
-    <div class="attendance-header fade-section">
-      <div class="dash-section-label" style="margin:0;">Attendance</div>
-      <div class="filter-tabs">
-        <button class="filter-tab active" id="tabAll">All</button>
-        <button class="filter-tab" id="tabSafe">Safe</button>
-        <button class="filter-tab" id="tabBorderline">Borderline</button>
-        <button class="filter-tab" id="tabRisk">At Risk</button>
-      </div>
+    <!-- Bottom Tab Bar -->
+    <div class="bottom-nav" id="bottomNav">
+      <button class="bottom-nav-btn active" data-tab="dashboard">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="bottom-nav-btn" data-tab="calendar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span>Calendar</span>
+      </button>
+      <button class="bottom-nav-btn" data-tab="cgpa">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>CGPA</span>
+      </button>
+      <button class="bottom-nav-btn" data-tab="chat">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>AI Chat</span>
+      </button>
     </div>
-    <div class="subjects-grid" id="subjectsGrid"></div>
 
-    <div class="signout-section">
-      <button class="signout-btn" id="signOutBtn">Sign Out</button>
-    </div>
-
-  </div>
-
-  <!-- Subject Detail -->
-  <div class="detail-page" id="detailPage" style="display:none;">
-    <nav class="dash-navbar">
-      <div class="dash-nav-left">
-        <button class="back-btn" id="backBtn">← Back</button>
-        <div>
-          <div class="dash-nav-title" id="detailSubjectName">Subject</div>
-          <div class="dash-nav-sub" id="detailSubjectType">Theory</div>
-        </div>
-      </div>
-      <div class="dash-nav-right">
-  <a href="attendance.html" class="nav-link" style="font-size:0.82rem;">📅 Tracker</a>
-  <a href="cgpa.html" target="_blank" class="nav-link" style="font-size:0.82rem;">🧮 CGPA</a>
-  <a href="chat.html" class="nav-link" style="font-size:0.82rem;">🤖 AI</a>
-  <button class="theme-toggle" id="themeToggle">🌙</button>
-</div>
-    </nav>
-
-    <div class="detail-content">
-      <div class="detail-stats">
-        <div class="detail-stat-card">
-          <canvas id="detailRing" width="90" height="90"></canvas>
-          <div class="detail-stat-info">
-            <div class="detail-stat-label">Attendance</div>
-            <div class="detail-stat-value" id="detailAttended">--/--</div>
-            <div class="detail-stat-sub" id="detailStatus">--</div>
-          </div>
-        </div>
-        <div class="detail-stat-card">
-          <canvas id="marksRing" width="90" height="90"></canvas>
-          <div class="detail-stat-info">
-            <div class="detail-stat-label">Overall Marks</div>
-            <div class="detail-stat-value" id="detailMarks">0/0</div>
-            <div class="detail-stat-sub" id="detailAssessments">0 assessments</div>
-          </div>
-        </div>
-        <div class="detail-stat-card best-score-card">
-          <div class="best-score-icon">🏆</div>
-          <div class="detail-stat-info">
-            <div class="detail-stat-label">Best Score</div>
-            <div class="detail-stat-value" id="detailBestScore">No data</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="assessments-section">
-        <div class="assessments-header">
-          <div class="dash-section-label" style="margin:0;">Assessments</div>
-          <button class="add-btn" id="addAssessmentBtn">+ Add Assessment</button>
-        </div>
-
-        <div class="add-form" id="addForm" style="display:none;">
-          <div class="form-row">
-            <div class="form-group full">
-              <label>Title *</label>
-              <input type="text" id="formTitle" placeholder="e.g. Assignment 1, Quiz 2..."/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Category</label>
-              <select id="formCategory">
-                <option>Assignment</option>
-                <option>Lab Record</option>
-                <option>CAT-1</option>
-                <option>CAT-2</option>
-                <option>Semester</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="formDate"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Marks Obtained *</label>
-              <input type="number" id="formObtained" placeholder="e.g. 18"/>
-            </div>
-            <div class="form-group">
-              <label>Out Of *</label>
-              <input type="number" id="formOutOf" placeholder="e.g. 20"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group full">
-              <label>Notes</label>
-              <input type="text" id="formNotes" placeholder="Optional notes..."/>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button class="save-btn" id="saveAssessmentBtn">Save</button>
-            <button class="cancel-btn" id="cancelAssessmentBtn">Cancel</button>
-          </div>
-        </div>
-
-        <div id="assessmentsList"></div>
-      </div>
-    </div>
   </div>
 
   <script src="dashboard.js"></script>
+  <script src="calendar.js"></script>
+  <script src="cgpa-tab.js"></script>
+  <script src="chat-tab.js"></script>
   <script>
-    // Theme
     const saved = localStorage.getItem('site_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     document.querySelectorAll('.theme-toggle').forEach(t => t.textContent = saved === 'dark' ? '🌙' : '☀️');

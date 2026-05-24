@@ -405,6 +405,26 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('vce_name', name);
     document.getElementById('nameModal').style.display = 'none';
     showApp(name);
+    // Bottom nav tab switching
+document.querySelectorAll('.bottom-nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+
+    // Update active button
+    document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Switch content
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+
+    // Init calendar when switching to it
+    if (tab === 'calendar') initCalendar();
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
   });
 
   document.getElementById('nameInput')?.addEventListener('keypress', (e) => {
