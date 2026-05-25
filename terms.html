@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VCE Tracker | Terms of Service</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logo.png" class="nav-logo"/>
+      <span class="nav-title">VCE Tracker</span>
+    </div>
+    <div style="display:flex;gap:0.8rem;align-items:center;">
+      <a href="index.html" class="nav-link">Home</a>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </nav>
+
+  <div class="legal-page">
+    <div class="legal-header">
+      <h1>Terms of Service</h1>
+      <p>Last updated: May 2026</p>
+    </div>
+
+    <div class="legal-content">
+
+      <div class="legal-section">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing or using VCE Tracker at vce-tracker.vercel.app, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the service. VCE Tracker is a student-built tool and is provided as-is for educational and personal use only.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>2. What VCE Tracker Does</h2>
+        <p>VCE Tracker is a browser-based tool that helps Vardhaman College of Engineering students track their attendance percentages, monitor subject-wise CGPA, calculate safe bunk counts, manually log daily attendance, and predict semester GPA using a grade calculator. All data processing happens locally in your browser. No data is sent to or stored on any external server operated by VCE Tracker.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>3. How the Bookmarklet Works</h2>
+        <p>The VCE Tracker bookmarklet is a small piece of JavaScript code saved in your browser. When clicked while you are logged into the official VCE student portal at student.vardhaman.org, it reads your attendance and CGPA data from the page using your existing authenticated session. It does not store, transmit, or share your login credentials. Your username and password are never accessed or seen by VCE Tracker at any point.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>4. User Responsibilities</h2>
+        <p>You are solely responsible for maintaining the security of your VCE portal login credentials. You agree to use VCE Tracker only for your own personal academic tracking and not to misuse the tool to access data belonging to other students. You agree not to attempt to reverse engineer, exploit, or disrupt the VCE Tracker service or the official VCE student portal.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>5. Accuracy of Information</h2>
+        <p>VCE Tracker displays data pulled directly from the official VCE student portal. While we strive for accuracy, we cannot guarantee that the data shown is always up to date or error-free, as it depends entirely on what the portal provides. Always verify critical academic information directly with your college. VCE Tracker is a supplementary tool and should not be relied upon as the sole source of your academic records.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>6. Intellectual Property</h2>
+        <p>VCE Tracker is an independent student project. All code, design, and content on this platform is created by and belongs to the VCE Tracker team. The VCE and Vardhaman College of Engineering name, logo, and related marks belong to their respective owners. VCE Tracker is not affiliated with, endorsed by, or officially connected to Vardhaman College of Engineering in any capacity.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>7. Disclaimer of Warranties</h2>
+        <p>VCE Tracker is provided free of charge on an "as is" and "as available" basis without warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, error-free, or always available. We are not responsible for any academic decisions made based on data shown by VCE Tracker.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>8. Limitation of Liability</h2>
+        <p>VCE Tracker and its creators shall not be liable for any direct, indirect, incidental, or consequential damages arising from your use of the service, including but not limited to incorrect attendance data, miscalculated CGPA predictions, or any academic consequences resulting from reliance on this tool.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>9. Changes to Terms</h2>
+        <p>We reserve the right to update these Terms of Service at any time. Continued use of VCE Tracker after any changes constitutes your acceptance of the new terms. We will update the "Last updated" date at the top of this page when changes are made.</p>
+      </div>
+
+      <div class="legal-section">
+        <h2>10. Contact</h2>
+        <p>If you have any questions about these Terms of Service, please contact us at <a href="mailto:vcetracker@gmail.com" style="color:var(--accent2);">vcetracker@gmail.com</a></p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('site_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.textContent = saved === 'dark' ? '🌙' : '☀️';
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('site_theme', next);
+    });
+  </script>
+</body>
+</html>
