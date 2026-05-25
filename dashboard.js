@@ -306,7 +306,8 @@ function renderSubjects(subjects, filter) {
 
 function openDetail(name, type, pct, attended, total) {
   currentSubject = { name, type, pct, attended, total };
-  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('tab-dashboard').classList.remove('active');
+  document.getElementById('bottomNav').style.display = 'none';
   document.getElementById('detailPage').style.display = 'block';
   document.getElementById('detailSubjectName').textContent = name;
   document.getElementById('detailSubjectType').textContent = type;
@@ -321,7 +322,8 @@ function openDetail(name, type, pct, attended, total) {
 
 function closeDetail() {
   document.getElementById('detailPage').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('bottomNav').style.display = 'flex';
+  document.getElementById('tab-dashboard').classList.add('active');
 }
 
 function getAssessments(subject) {
